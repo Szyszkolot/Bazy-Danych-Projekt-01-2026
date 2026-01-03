@@ -1,1 +1,65 @@
-blep
+import random
+from datetime import date, timedelta
+import numpy as np
+from faker import Faker
+import mysql.connector
+
+DB = dict(
+    host="giniewicz.it",
+    user="team02",
+    password="te@mzoz",
+    database="team02",
+)
+
+SEED = 1
+random.seed(SEED)
+np.random.seed(SEED)
+
+fake = Faker("pl_PL")
+Faker.seed(SEED)
+
+N_GOSCI = 600
+
+IMIONA =["Maja","Zofia","Zuzanna","Laura","Hanna","Julia","Oliwia","Pola",
+    "Alicja","Maria","Antonina","Emila","Amelia","Liliana",
+    "Nikodem","Antoni","Jan","Aleksander","Leon","Franciszek","Ignacy",
+    "Jakub","Stanisław","Mikołaj","Filip","Adam","Maksymilian","Wojciech"
+]
+
+NAZWISKA =["Nowak","Kowalski","Wiśniewski","Wójcik","Kowalczyk","Kamiński",
+    "Lewandowski","Zieliński","Dąbrowski","Szymański","Woźniak","Kozłowski",
+    "Mazur","Jankowski","Kwiatkowski","Wojciechowski","Krawczyk","Kaczmarek"
+]
+
+
+DOMENY = ["gmail.com", "wp.pl", "onet.pl", "interia.pl"]
+
+def rand_date(start: date, end: date) -> date:
+    days = (end - start).days
+    return start + timedelta(days=random.randint(0, days))
+
+def main():
+    cnx = mysql.connector.connect(**DB)
+    cur = cnx.cursor()
+
+    inserted = 0
+
+    for _ in range(N_GOSCI):
+        imie = random.choice(IMIONA)
+        nazwisko = random.choice(NAZWISKA)
+        if imie.lower().endswith("a") and nazwisko.lower().endswith("ski"):
+            nazwisko = nazwisko[:-3] + "ska"
+        email = f"{imie.lower()}.{nazwisko.lower()}{random.randint(1,999)}@{random.choice(DOMENY)}"
+        telefon = f"+48 {random.randint(400,800)}-{random.randint(100,999)}-{random.randint(100,999)}"
+
+        cur.execute("""INSERT INTO goscie (imie, nazwisko, email, telefon) VALUES (%s,%s,%s,%s)""",(imie, nazwisko, email, telefon))
+        inserted += 1
+
+    cnx.commit()
+    cur.close()
+    cnx.close()
+
+    print(f"dodano  gości")
+
+if __name__ == "__main__":
+    main()
