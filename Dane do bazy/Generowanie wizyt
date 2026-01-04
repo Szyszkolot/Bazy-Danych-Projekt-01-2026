@@ -1,0 +1,36 @@
+import random
+from datetime import date, timedelta
+import mysql.connector
+
+DB = dict(
+    host="giniewicz.it",
+    user="team02",
+    password="te@mzoz",
+    database="team02",
+)
+
+start = date(2024, 5, 5)
+end   = date(2025, 12, 12)
+days = (end - start).days
+
+cnx = mysql.connector.connect(**DB)
+cur = cnx.cursor()
+
+cur.execute("SELECT gosc_id FROM goscie")
+ids = [row[0] for row in cur.fetchall()]
+
+for gosc_id in ids:
+    ile_wizyt = random.randint(1, 5) 
+    offsets = random.sample(range(days + 1), k=ile_wizyt)
+    daty = [start + timedelta(days=o) for o in offsets]
+  
+    for _ in range(ile_wizyt):
+        d = start + timedelta(days=random.randint(0, days))
+        cur.execute(
+            "INSERT INTO wizyty (gosc_id, data_wizyty) VALUES (%s, %s)",
+            (gosc_id, d)
+        )
+cnx.commit()
+cur.close()
+cnx.close()
+print("OK")
