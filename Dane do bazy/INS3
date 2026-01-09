@@ -1,0 +1,20 @@
+INSERT INTO zgloszenia_zdarzen
+(zgloszenie_id, ubezpieczenie_id, zdarzenie_id, atrakcja_id, data_zdarzenia, opis, kwota_wyplacona, status) VALUES
+(1, 67, 1,  9,  '2024-06-12', 'Gwałtowne zatrzymanie kolejki – brak obrażeń', NULL,'odrzucone'),
+(2, 381 , 2,  6,  '2024-07-25', 'Poślizg i skręcenie kostki',2500, 'wypłacone'),
+(3,  589, 3, 6,  '2024-10-23', 'Rozcięcie dłoni',2000,  'wypłacone'),
+(4,  1009, 4, 6,  '2024-12-14', 'Uraz kręgosłupa-odcinek lędźwiowy',12000,'wypłacone'),
+(5,  1615,1, 11,  '2025-01-01', 'Złamanie serca', NULL, 'odrzucone'),
+(6,  1560, 2,  2,  '2025-02-06', 'Stłuczenie ramienia', 1500, 'wypłacone'),
+(7,  1316, 1,  5,  '2025-03-19', 'Długie stanie w kolejce',  NULL,'odrzucone'),
+(8,  1448, 3,  2, '2025-05-02', 'Złamanie palca wskazującego lewej dłoni', 3000,  'wypłacone'),
+(9,  1329, 2,  1,  '2025-06-18', 'Upadek z kucyka,siniak',1000, 'wypłacone'),
+(10, 1080,3, 12, '2025-07-02', 'Zasłabnięcie uczestnika przez brak świeżego powietrza. Złamanie nogi wskutek',3000, 'wypłacone'),
+(11, 979,2, 8,  '2025-07-16', 'Zwichnięcie kostki', 1000, 'wypłacone'),
+(12, 1439,1, 2,  '2025-09-05', 'Stanie w kolejce obok śmierdzącego gościa – brak obrażeń', NULL ,'odrzucone'),
+(13, 1619,4, 9,  '2025-11-22', 'Utrata nogi',NULL, 'wypłacone')
+--@block
+UPDATE zgloszenia_zdarzen
+SET kwota_wyplacona = CASE zgloszenie_id
+    WHEN 13 THEN 10000
+END
