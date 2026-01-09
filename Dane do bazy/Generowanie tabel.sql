@@ -1,0 +1,242 @@
+CREATE TABLE pracownicy (
+    pracownik_id INT PRIMARY KEY AUTO_INCREMENT,
+    imię VARCHAR(50) NOT NULL,
+    nazwisko VARCHAR(50) NOT NULL,
+    email VARCHAR(100),
+    telefon VARCHAR(30)
+);
+
+CREATE TABLE typ_atrakcji (
+    typ_id INT PRIMARY KEY AUTO_INCREMENT,
+    nazwa_typu VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE atrakcje (
+    atrakcja_id INT PRIMARY KEY AUTO_INCREMENT,
+    nazwa VARCHAR(100) NOT NULL UNIQUE,
+    opis TEXT,
+    typ_id INT NOT NULL,
+    prędkość INT,
+    wysokość INT,
+    producent INT,
+    data_uruchomienia DATE,
+    FOREIGN KEY (typ_id) REFERENCES typ_atrakcji(typ_id)
+);
+
+CREATE TABLE ograniczenia (
+    atrakcja_id INT PRIMARY KEY,
+    minimalny_wzrost INT,
+    minimalny_wiek INT,
+    FOREIGN KEY (atrakcja_id) REFERENCES atrakcje(atrakcja_id)
+);
+
+CREATE TABLE przeglad (
+    przeglad_id INT PRIMARY KEY AUTO_INCREMENT,
+    atrakcja_id INT NOT NULL,
+    firma VARCHAR(100) NOT NULL,
+    data_przeglądu DATE NOT NULL,
+    data_nastepnego_przegladu DATE,
+    FOREIGN KEY (atrakcja_id) REFERENCES atrakcje(atrakcja_id)
+);
+
+CREATE TABLE wyniki_przeglądów (
+    przeglad_id INT PRIMARY KEY,
+    ocena_bezpieczenstwa INT NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    zalecenia TEXT NOT NULL,
+    FOREIGN KEY (przeglad_id) REFERENCES przeglad(przeglad_id)
+);
+
+CREATE TABLE awarie (
+    awaria_id INT PRIMARY KEY AUTO_INCREMENT,
+    atrakcja_id INT NOT NULL,
+    przeglad_id INT,
+    pracownik_id INT,
+    data_wykrycia DATE NOT NULL,
+    opis TEXT NOT NULL,
+    poziom_krytycznosci INT,
+    status VARCHAR(50) NOT NULL,
+    FOREIGN KEY (atrakcja_id) REFERENCES atrakcje(atrakcja_id),
+    FOREIGN KEY (przeglad_id) REFERENCES przeglad(przeglad_id),
+    FOREIGN KEY (pracownik_id) REFERENCES pracownicy(pracownik_id),
+    CHECK (
+        (przeglad_id IS NOT NULL AND pracownik_id IS NULL)
+        OR
+        (przeglad_id IS NULL AND pracownik_id IS NOT NULL)
+    )
+);
+
+CREATE TABLE goscie (
+    gosc_id INT PRIMARY KEY AUTO_INCREMENT,
+    imie VARCHAR(50) NOT NULL,
+    nazwisko VARCHAR(50) NOT NULL,
+    email VARCHAR(100),
+    telefon VARCHAR(30)
+);
+
+CREATE TABLE rodzaje_biletow (
+    rodzaj_biletu_id INT PRIMARY KEY AUTO_INCREMENT,
+    nazwa VARCHAR(50),
+    czy_vr BOOLEAN,
+    czas_obowiazywania DATE
+);
+
+CREATE TABLE cennik (
+    cennik_id INT PRIMARY KEY AUTO_INCREMENT,
+    rodzaj_biletu_id INT NOT NULL,
+    cena DECIMAL(10,2),
+    data_od DATE,
+    data_do DATE,
+    FOREIGN KEY (rodzaj_biletu_id) REFERENCES rodzaje_biletow(rodzaj_biletu_id)
+);
+
+CREATE TABLE zakupione_bilety (
+    zakup_id INT PRIMARY KEY AUTO_INCREMENT,
+    gosc_id INT NOT NULL,
+    data_zakupu DATE,
+    FOREIGN KEY (gosc_id) REFERENCES goscie(gosc_id)
+);
+
+CREATE TABLE wizyty (
+    wizyta_id INT PRIMARY KEY AUTO_INCREMENT,
+    gosc_id INT NOT NULL,
+    data_wizyty DATE,
+    FOREIGN KEY (gosc_id) REFERENCES goscie(gosc_id)
+);
+
+CREATE TABLE ubezpieczenie (
+    ubezpieczenie_id INT PRIMARY KEY AUTO_INCREMENT,
+    gosc_id INT NOT NULL,
+    wizyta_id INT NOT NULL,
+    data_zakupu DATE ,
+    suma DECIMAL(12,2),
+    FOREIGN KEY (gosc_id) REFERENCES goscie(gosc_id),
+    FOREIGN KEY (wizyta_id) REFERENCES wizyty(wizyta_id)
+);
+
+
+CREATE TABLE rodzaje_zdarzen (
+    zdarzenie_id INT PRIMARY KEY AUTO_INCREMENT,
+    nazwa VARCHAR(100) NOT NULL,
+    opis TEXT,
+    kategoria VARCHAR(50),
+    srednia_czestosc DECIMAL(5,2),
+    szacowany_koszt DECIMAL(10,2)
+);
+
+CREATE TABLE zgloszenia_zdarzen (
+    zgloszenie_id INT PRIMARY KEY AUTO_INCREMENT,
+    ubezpieczenie_id INT NOT NULL,
+    zdarzenie_id INT NOT NULL,
+    atrakcja_id INT,
+    data_zdarzenia DATE NOT NULL,
+    opis TEXT,
+    kwota_wyplacona DECIMAL(10,2),
+    status VARCHAR(50),
+    FOREIGN KEY (ubezpieczenie_id) REFERENCES ubezpieczenie(ubezpieczenie_id),
+    FOREIGN KEY (zdarzenie_id) REFERENCES rodzaje_zdarzen(zdarzenie_id),
+    FOREIGN KEY (atrakcja_id) REFERENCES atrakcje(atrakcja_id)
+);
+
+CREATE TABLE rodzaje_kosztow (
+    rodzaj_kosztu_id INT PRIMARY KEY AUTO_INCREMENT,
+    nazwa VARCHAR(100) NOT NULL,
+    opis TEXT
+);
+
+CREATE TABLE koszty_dzialalnosci (
+    koszt_id INT PRIMARY KEY AUTO_INCREMENT,
+    rodzaj_kosztu_id INT NOT NULL,
+    atrakcja_id INT,
+    data_kosztu DATE NOT NULL,
+    kwota DECIMAL(12,2) NOT NULL,
+    opis TEXT,
+    FOREIGN KEY (rodzaj_kosztu_id) REFERENCES rodzaje_kosztow(rodzaj_kosztu_id),
+    FOREIGN KEY (atrakcja_id) REFERENCES atrakcje(atrakcja_id)
+);
+
+CREATE TABLE koszty_awarii (
+    koszt_id INT PRIMARY KEY,
+    awaria_id INT NOT NULL,
+    FOREIGN KEY (koszt_id) REFERENCES koszty_dzialalnosci(koszt_id),
+    FOREIGN KEY (awaria_id) REFERENCES awarie(awaria_id)
+);
+
+CREATE TABLE transakcje_finansowe (
+    transakcja_id INT PRIMARY KEY AUTO_INCREMENT,
+    data_transakcji DATE NOT NULL,
+    typ VARCHAR(20) NOT NULL,
+    kwota DECIMAL(12,2) NOT NULL,
+    opis TEXT
+);
+
+CREATE TABLE transakcje_biletowe (
+    transakcja_id INT PRIMARY KEY,
+    zakup_id INT NOT NULL,
+    FOREIGN KEY (transakcja_id) REFERENCES transakcje_finansowe(transakcja_id),
+    FOREIGN KEY (zakup_id) REFERENCES zakupione_bilety(zakup_id)
+);
+
+CREATE TABLE transakcje_ubezpieczen (
+    transakcja_id INT PRIMARY KEY,
+    ubezpieczenie_id INT NOT NULL,
+    FOREIGN KEY (transakcja_id) REFERENCES transakcje_finansowe(transakcja_id),
+    FOREIGN KEY (ubezpieczenie_id) REFERENCES ubezpieczenie(ubezpieczenie_id)
+);
+
+CREATE TABLE transakcje_odszkodowan (
+    transakcja_id INT PRIMARY KEY,
+    zgloszenie_id INT NOT NULL,
+    FOREIGN KEY (transakcja_id) REFERENCES transakcje_finansowe(transakcja_id),
+    FOREIGN KEY (zgloszenie_id) REFERENCES zgloszenia_zdarzen(zgloszenie_id)
+);
+
+CREATE TABLE wynagrodzenia (
+    wynagrodzenie_id INT PRIMARY KEY AUTO_INCREMENT,
+    pracownik_id INT NOT NULL,
+    kwota_miesieczna DECIMAL(12,2) NOT NULL,
+    data_od DATE NOT NULL,
+    data_do DATE,
+    FOREIGN KEY (pracownik_id) REFERENCES pracownicy(pracownik_id)
+);
+
+CREATE TABLE koszty_wynagrodzen (
+    koszt_id INT PRIMARY KEY,
+    pracownik_id INT NOT NULL,
+    okres_od DATE NOT NULL,
+    okres_do DATE NOT NULL,
+    FOREIGN KEY (koszt_id) REFERENCES koszty_dzialalnosci(koszt_id),
+    FOREIGN KEY (pracownik_id) REFERENCES pracownicy(pracownik_id)
+);
+
+CREATE TABLE aktywnosci_gosci (
+    aktywnosc_id INT PRIMARY KEY AUTO_INCREMENT,
+    gosc_id INT NOT NULL,
+    atrakcja_id INT NOT NULL,
+    data_wizyty DATE NOT NULL,
+    FOREIGN KEY (gosc_id) REFERENCES goscie(gosc_id),
+    FOREIGN KEY (atrakcja_id) REFERENCES atrakcje(atrakcja_id)
+);
+
+CREATE TABLE niedostepnosci_atrakcji (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    atrakcja_id INT NOT NULL,
+    data_od DATE NOT NULL,
+    data_do DATE,
+    powod VARCHAR(255),
+    FOREIGN KEY (atrakcja_id) REFERENCES atrakcje(atrakcja_id)
+);
+
+RENAME TABLE wyniki_przeglądów TO wyniki_przeglądow;
+ALTER TABLE pracownicy
+RENAME COLUMN imię TO imie;
+ALTER TABLE atrakcje
+RENAME COLUMN prędkość TO predkosc,
+RENAME COLUMN wysokość TO wysokosc;
+ALTER TABLE atrakcje
+MODIFY COLUMN producent VARCHAR(50);
+ALTER TABLE rodzaje_biletow
+ADD COLUMN opis VARCHAR(100);
+ALTER TABLE rodzaje_biletow
+MODIFY COLUMN opis TEXT;
+
