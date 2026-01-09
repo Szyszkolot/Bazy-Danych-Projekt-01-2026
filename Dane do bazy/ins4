@@ -1,0 +1,36 @@
+--@block 
+INSERT IGNORE INTO wynagrodzenia (pracownik_id, kwota_miesieczna, data_od, data_do)
+SELECT
+  x.pracownik_id,
+  CASE WHEN x.pracownik_id BETWEEN 1 AND 3 THEN 4900 ELSE 5100 END AS kwota_miesieczna,
+  x.data_od,
+  DATE_ADD(x.data_od, INTERVAL 30 DAY) AS data_do
+FROM (
+  WITH RECURSIVE okresy AS (
+    SELECT 1 AS pracownik_id, DATE('2024-05-05') AS data_od
+    UNION ALL SELECT 2, DATE('2024-05-05')
+    UNION ALL SELECT 3, DATE('2024-05-05')
+    UNION ALL SELECT 4, DATE('2024-05-05')
+    UNION ALL SELECT 5, DATE('2024-05-05')
+    UNION ALL SELECT 6, DATE('2024-12-05')
+
+    UNION ALL
+    SELECT
+      pracownik_id,
+      DATE_ADD(data_od, INTERVAL 30 DAY)
+    FROM okresy
+    WHERE DATE_ADD(data_od, INTERVAL 30 DAY) <= '2025-12-12'
+  )
+  SELECT pracownik_id, data_od
+  FROM okresy
+) AS x
+WHERE DATE_ADD(x.data_od, INTERVAL 30 DAY) <= '2025-12-12';
+
+--@block
+--@block
+INSERT INTO rodzaje_kosztow (rodzaj_kosztu_id,nazwa,opis) VALUES 
+(1,'atrakcje','zakup atrakcji'),
+(2, 'wypłaty pracowników', 'wypłaty należne każdemu z pracowników co 30 dni pracy'),
+(3,'odszkodowania','kwoty wypłacone ofirom wypadków w parku rozrywki'  ),
+(4,'awarie','opłaty by opłacić wszelkie naprawy' ),
+(5, 'przeglądy','opłaty za przeglądy firmy zewnętrznej' );
