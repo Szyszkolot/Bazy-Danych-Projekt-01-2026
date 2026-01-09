@@ -1,0 +1,88 @@
+--@block
+INSERT INTO rodzaje_biletow (rodzaj_biletu_id, nazwa, czas_obowiazywania) VALUES
+(1,'Normalny_sezonowy', '1 dzień'),
+(2,'Ulgowy_sezonowy', '1 dzień'),
+(3,'Normalny_pozasezonowy','1 dzień'),
+(4,'Ulgowy_pozasezonowy', '1 dzień');
+
+--@block
+INSERT INTO cennik (rodzaj_biletu_id, cena, data_od, data_do) VALUES
+(1, 110.00, '05-01', '09-01'),
+(2,  80.00, '05-01', '09-01'),
+(3,  100.00, '09-02', '04-30'),
+(4, 70.00, '09-02', '04-30')
+--@block
+ALTER TABLE cennik
+MODIFY data_od VARCHAR(20),
+MODIFY data_do VARCHAR(20);
+--@block
+INSERT INTO atrakcje (atrakcja_id, nazwa, opis, typ_id, prędkość, wysokość, producent, data_uruchomienia) VALUES
+(1,'Karuzela Kucyki', 'Karuzela na której dzieci i dorośli siedzą na kucykach gdy ta się kręci',4, 6, 0.5,1, '2024-05-05'),
+(2,'Piorun', 'kolejka górska o ostrych zakrętach', 1, 60, 35, 1, '2024-05-05'),
+(3,'Sky Wheel', 'Diabelski młyn z widokiem na cały park', 3, 3, 60,3, '2024-05-05'),
+(4,'Dom Zguby', 'Dom strachów z efektami dźwiękowymi i aktorami',3, NULL, NULL, 1, '2024-05-05'),
+(5,'Wodny Spadek', 'Kolejka wodna ze zjazdem', 2, 45, 18,2 , '2024-05-05'),
+(6,'Liny i Mosty', 'Park linowy o kilku trasach',3 , NULL, NULL, 3, '2024-05-05'),
+(7,'Laser Arena', 'Laser tag',3 , NULL, NULL,4, '2024-05-05'),
+(8,'Labirynt', 'Labirynt', 3, NULL, NULL,5, '2024-05-05'),
+(9,'Błysk', 'Najszybsza kolejka górska', 1, 120, 22,4, '2024-05-05'),
+(10,'Fale spokoju', 'Spokojna kolejka wodna', 2, 30, 10, 1, '2024-05-05'),
+(11,'Kawowy kąt', 'Wróżby z fusów', 5, NULL, NULL, 1, '2024-12-05'),
+(12,'Pokój wspomnień', 'Escape room gdzie goście poznają historię Marka i na podstawie wszystkich informacji (z życia i miejsca zbrodni) muszą zgadnąć kto go zabił', 5, NULL, NULL, 3, '2024-12-05');
+--@block
+UPDATE atrakcje
+SET producent = CASE atrakcja_id
+    WHEN 1 THEN 'Vekma'
+    WHEN 2 THEN 'Vekma'
+    WHEN 3 THEN 'Grimens'
+    WHEN 4 THEN 'Vekma'
+    WHEN 5 THEN 'Inters'
+    WHEN 6 THEN  'Grimens'
+    WHEN 7 THEN 'Makens Riders'
+    WHEN 8 THEN  'Zapermajs'
+    WHEN 9 THEN 'Makens Riders'
+    WHEN 10 THEN 'Vekma'
+    WHEN 11 THEN 'Vekma'
+    WHEN 12 THEN 'Grimens'
+END;
+
+--@block
+INSERT INTO typ_atrakcji (typ_id, nazwa_typu) VALUES
+(1,'Kolejka górska'),
+(2,'Atrakcja wodna'),
+(3,'Atrakcja spokojna'),
+(4,'Karuzela'),
+(5,'Escape/Wróżby');
+
+--@block
+INSERT INTO ograniczenia (atrakcja_id, minimalny_wzrost, minimalny_wiek) VALUES
+(1, 90, 3),
+(2, 140, 12),
+(3, NULL, NULL),
+(4, NULL, 10),
+(5, 120, 8),
+(6, 130, 10),
+(7, NULL, 8),
+(8, NULL, NULL),
+(9, 150, 14),
+(10, NULL, NULL),
+(11, NULL, NULL),
+(12, NULL, 12);
+--@block
+INSERT INTO pracownicy (pracownik_id, imię, nazwisko, email, telefon) VALUES
+('1','Anna', 'Kowalczuk', 'anna.kowalczuk@park.pl', '500-111-222'),
+('2','Jan', 'Kwaśniewski', 'jan.kwaśniewski@park.pl', '500-222-333'),
+('3','Aleksandra', 'Mazurska', 'Aleksandra.mazurska@park.pl', '500-333-444'),
+('4','Piotr', 'Zieliński', 'piotr.zielinski@park.pl', '500-444-555'),
+('5','Kamil', 'Wójt', 'kamil.wojt@park.pl', '500-555-666'),
+('6','Krzysztof','Szczypior','krzysztof.szczypior@park.pl', '519-333-213');
+--@block
+ALTER TABLE pracownicy
+ADD COLUMN data_zatrudnienia DATE;
+UPDATE pracownicy
+SET data_zatrudnienia = '2024-05-05'
+WHERE pracownik_id IN (1,2,3,4,5);
+UPDATE pracownicy
+SET data_zatrudnienia = '2024-12-05'
+WHERE pracownik_id = 6;
+
