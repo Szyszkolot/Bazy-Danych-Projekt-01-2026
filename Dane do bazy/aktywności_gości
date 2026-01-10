@@ -1,0 +1,33 @@
+--@block 
+INSERT INTO aktywnosci_gosci (aktywnosc_id, gosc_id, atrakcja_id, data_wizyty)
+SELECT
+  ROW_NUMBER() OVER (ORDER BY w.data_wizyty, w.gosc_id, x.atrakcja_id) AS aktywnosc_id,
+  w.gosc_id,
+  x.atrakcja_id,
+  w.data_wizyty
+FROM wizyty w
+JOIN (
+  SELECT
+    w2.gosc_id,
+    w2.data_wizyty,
+    a2.atrakcja_id,
+    ROW_NUMBER() OVER (
+      PARTITION BY w2.gosc_id, w2.data_wizyty
+      ORDER BY
+        CASE
+          
+          WHEN w2.data_wizyty < '2024-12-05' THEN a2.atrakcja_id
+          
+          ELSE MOD(a2.atrakcja_id + DATEDIFF(w2.data_wizyty, '2024-05-05') + w2.gosc_id, 1000)
+        END
+    ) AS rn
+  FROM wizyty w2
+  JOIN atrakcje a2
+    ON a2.data_uruchomienia <= w2.data_wizyty
+  WHERE w2.data_wizyty BETWEEN '2024-05-05' AND '2025-12-12'
+) x
+  ON x.gosc_id = w.gosc_id
+ AND x.data_wizyty = w.data_wizyty
+WHERE
+  w.data_wizyty BETWEEN '2024-05-05' AND '2025-12-12'
+  AND x.rn <= 10;
