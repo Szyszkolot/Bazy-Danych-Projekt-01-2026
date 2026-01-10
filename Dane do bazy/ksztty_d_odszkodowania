@@ -1,0 +1,19 @@
+--@BLOCK 
+INSERT INTO koszty_dzialalnosci
+(koszt_id, rodzaj_kosztu_id, atrakcja_id, data_kosztu, kwota, opis)
+SELECT
+  1041 + ROW_NUMBER() OVER (ORDER BY zz.data_zdarzenia, zz.atrakcja_id) AS koszt_id,
+  3 AS rodzaj_kosztu_id,
+  zz.atrakcja_id,
+  zz.data_zdarzenia AS data_kosztu,
+  zz.kwota_wyplacona AS kwota,
+  CONCAT(
+    'Koszt odszkodowania dla atrakcji ',
+    zz.atrakcja_id,
+    ' (zdarzenie ',
+    zz.zdarzenie_id,
+    ') dnia ',
+    DATE_FORMAT(zz.data_zdarzenia, '%Y-%m-%d')
+  ) AS opis
+FROM zgloszenia_zdarzen zz
+WHERE zz.kwota_wyplacona IS NOT NULL;
