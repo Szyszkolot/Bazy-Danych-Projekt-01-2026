@@ -170,27 +170,6 @@ CREATE TABLE transakcje_finansowe (
     opis TEXT
 );
 
-CREATE TABLE transakcje_biletowe (
-    transakcja_id INT PRIMARY KEY,
-    zakup_id INT NOT NULL,
-    FOREIGN KEY (transakcja_id) REFERENCES transakcje_finansowe(transakcja_id),
-    FOREIGN KEY (zakup_id) REFERENCES zakupione_bilety(zakup_id)
-);
-
-CREATE TABLE transakcje_ubezpieczen (
-    transakcja_id INT PRIMARY KEY,
-    ubezpieczenie_id INT NOT NULL,
-    FOREIGN KEY (transakcja_id) REFERENCES transakcje_finansowe(transakcja_id),
-    FOREIGN KEY (ubezpieczenie_id) REFERENCES ubezpieczenie(ubezpieczenie_id)
-);
-
-CREATE TABLE transakcje_odszkodowan (
-    transakcja_id INT PRIMARY KEY,
-    zgloszenie_id INT NOT NULL,
-    FOREIGN KEY (transakcja_id) REFERENCES transakcje_finansowe(transakcja_id),
-    FOREIGN KEY (zgloszenie_id) REFERENCES zgloszenia_zdarzen(zgloszenie_id)
-);
-
 CREATE TABLE wynagrodzenia (
     wynagrodzenie_id INT PRIMARY KEY AUTO_INCREMENT,
     pracownik_id INT NOT NULL,
@@ -239,4 +218,8 @@ ALTER TABLE rodzaje_biletow
 ADD COLUMN opis VARCHAR(100);
 ALTER TABLE rodzaje_biletow
 MODIFY COLUMN opis TEXT;
+
+ALTER TABLE zakupione_bilety
+ADD COLUMN rodzaj_biletu_id INT,
+ADD FOREIGN KEY (rodzaj_biletu_id) REFERENCES rodzaje_biletow(rodzaj_biletu_id);
 
