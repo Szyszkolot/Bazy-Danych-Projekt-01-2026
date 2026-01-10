@@ -1,0 +1,30 @@
+ALTER TABLE pracownicy
+ADD COLUMN data_zatrudnienia DATE;
+UPDATE pracownicy
+SET data_zatrudnienia = '2024-05-05'
+WHERE pracownik_id IN (1,2,3,4,5);
+UPDATE pracownicy
+SET data_zatrudnienia = '2024-12-05'
+WHERE pracownik_id = 6;
+--@block
+INSERT INTO wyniki_przeglądow (przeglad_id, ocena_bezpieczenstwa, status, zalecenia)
+SELECT
+  p.przeglad_id,
+  'bezpieczne' AS ocena_bezpieczenstwa,
+  'sprawdzone i bezpieczne' AS status,
+  'brak' AS zalecenia
+FROM przeglad p;
+
+--@block
+UPDATE wyniki_przeglądow
+SET
+  zalecenia = 'należy wyłączyć z użytku do czasu naprawy',
+  status = 'usterka została naprawiona',
+  ocena_bezpieczenstwa = 'nie jest bezpieczna'
+WHERE przeglad_id IN (142, 664, 854);
+--@block
+UPDATE wyniki_przeglądow
+SET
+  zalecenia = 'należy naprawić, atrakcja może dalej funkcjonować',
+  status = 'usterka została naprawiona'
+WHERE przeglad_id = 282;
