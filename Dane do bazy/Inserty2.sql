@@ -1,9 +1,4 @@
 
-INSERT INTO zakupione_bilety (gosc_id, data_zakupu)
-SELECT gosc_id, data_wizyty
-FROM wizyty
-ORDER BY data_wizyty ASC;
-
 UPDATE rodzaje_biletow
 SET opis = case rodzaj_biletu_id
     WHEN 1 THEN 'Bilet dla każdej osoby w wieku od 8 do 70 lat, oferowany w sezonie letnim'
@@ -38,6 +33,7 @@ SELECT data_do, 'WYNAGRODZENIA',
 kwota_miesieczna, 
 CONCAT('wypłata wynagrodzenia ID ', wynagrodzenie_id, ', pracownik_id ', pracownik_id)
 FROM wynagrodzenia;
+
 
 
 
