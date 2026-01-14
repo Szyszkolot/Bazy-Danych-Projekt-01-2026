@@ -1,0 +1,6 @@
+INSERT INTO ubezpieczenie (gosc_id, wizyta_id, data_zakupu)
+SELECT gosc_id, wizyta_id, data_wizyty
+FROM wizyty;
+
+UPDATE ubezpieczenie
+SET suma = 30;
