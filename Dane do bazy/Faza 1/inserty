@@ -4,6 +4,15 @@ INSERT INTO rodzaje_biletow (rodzaj_biletu_id, nazwa, czas_obowiazywania) VALUES
 (2,'Ulgowy_sezonowy', '1 dzień'),
 (3,'Normalny_pozasezonowy','1 dzień'),
 (4,'Ulgowy_pozasezonowy', '1 dzień');
+--@block
+UPDATE rodzaje_biletow
+SET opis = case rodzaj_biletu_id
+    WHEN 1 THEN 'Bilet dla każdej osoby w wieku od 8 do 70 lat, oferowany w sezonie letnim'
+    WHEN 2 THEN 'Bilet dla uczniów w wieku od 8 lat i studentów przysługujący po okazaniu ważnej legitymacji, oferowany w sezonie letnim'
+    WHEN 3 THEN 'Bilet dla każdej osoby w wieku od 8 do 70 lat'
+    WHEN 4 THEN 'Bilet dla uczniów w wieku od 8 lat i studentów przysługujący po okazaniu ważnej legitymacji'
+END
+WHERE rodzaj_biletu_id IN (1, 2, 3, 4);
 
 --@block
 INSERT INTO cennik (rodzaj_biletu_id, cena, data_od, data_do) VALUES
