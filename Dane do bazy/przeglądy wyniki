@@ -1,11 +1,3 @@
-ALTER TABLE pracownicy
-ADD COLUMN data_zatrudnienia DATE;
-UPDATE pracownicy
-SET data_zatrudnienia = '2024-05-05'
-WHERE pracownik_id IN (1,2,3,4,5);
-UPDATE pracownicy
-SET data_zatrudnienia = '2024-12-05'
-WHERE pracownik_id = 6;
 --@block
 INSERT INTO wyniki_przeglądow (przeglad_id, ocena_bezpieczenstwa, status, zalecenia)
 SELECT
