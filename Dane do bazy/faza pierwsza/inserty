@@ -15,6 +15,7 @@ INSERT INTO cennik (rodzaj_biletu_id, cena, data_od, data_do) VALUES
 ALTER TABLE cennik
 MODIFY data_od VARCHAR(20),
 MODIFY data_do VARCHAR(20);
+
 --@block
 INSERT INTO atrakcje (atrakcja_id, nazwa, opis, typ_id, prędkość, wysokość, producent, data_uruchomienia) VALUES
 (1,'Karuzela Kucyki', 'Karuzela na której dzieci i dorośli siedzą na kucykach gdy ta się kręci',4, 6, 0.5,1, '2024-05-05'),
@@ -85,4 +86,6 @@ WHERE pracownik_id IN (1,2,3,4,5);
 UPDATE pracownicy
 SET data_zatrudnienia = '2024-12-05'
 WHERE pracownik_id = 6;
+
+
 
