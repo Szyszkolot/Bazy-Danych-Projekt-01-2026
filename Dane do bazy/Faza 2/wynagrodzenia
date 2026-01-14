@@ -26,11 +26,3 @@ FROM (
 ) AS x
 WHERE DATE_ADD(x.data_od, INTERVAL 30 DAY) <= '2025-12-12';
 
---@block
---@block
-INSERT INTO rodzaje_kosztow (rodzaj_kosztu_id,nazwa,opis) VALUES 
-(1,'atrakcje','zakup atrakcji'),
-(2, 'wypłaty pracowników', 'wypłaty należne każdemu z pracowników co 30 dni pracy'),
-(3,'odszkodowania','kwoty wypłacone ofirom wypadków w parku rozrywki'  ),
-(4,'awarie','opłaty by opłacić wszelkie naprawy' ),
-(5, 'przeglądy','opłaty za przeglądy firmy zewnętrznej' );
