@@ -1,13 +1,4 @@
 
-UPDATE rodzaje_biletow
-SET opis = case rodzaj_biletu_id
-    WHEN 1 THEN 'Bilet dla każdej osoby w wieku od 8 do 70 lat, oferowany w sezonie letnim'
-    WHEN 2 THEN 'Bilet dla uczniów w wieku od 8 lat i studentów przysługujący po okazaniu ważnej legitymacji, oferowany w sezonie letnim'
-    WHEN 3 THEN 'Bilet dla każdej osoby w wieku od 8 do 70 lat'
-    WHEN 4 THEN 'Bilet dla uczniów w wieku od 8 lat i studentów przysługujący po okazaniu ważnej legitymacji'
-END
-WHERE rodzaj_biletu_id IN (1, 2, 3, 4);
-
 UPDATE zakupione_bilety
 SET rodzaj_biletu_id = FLOOR(1 + (RAND() * 4));
 
@@ -33,6 +24,7 @@ SELECT data_do, 'WYNAGRODZENIA',
 kwota_miesieczna, 
 CONCAT('wypłata wynagrodzenia ID ', wynagrodzenie_id, ', pracownik_id ', pracownik_id)
 FROM wynagrodzenia;
+
 
 
 
