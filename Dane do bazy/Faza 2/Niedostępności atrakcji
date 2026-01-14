@@ -1,0 +1,7 @@
+INSERT INTO niedostepnosci_atrakcji (atrakcja_id, data_od, data_do, powod)
+VALUES (2, '2024-09-07', '2024-09-09', 'awaria'),
+        (5, '2025-05-04', '2024-05-20', 'awaria'),
+        (7, '2025-06-15', '2025-06-16', 'Naprawa liny asekuracyjnej'),
+        (9, '2025-08-17', '2025-09-20', 'awaria'),
+        (12, '2025-09-26', '2025-09-30', 'awaria');
+
