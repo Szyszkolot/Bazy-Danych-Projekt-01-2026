@@ -99,5 +99,12 @@ INSERT INTO awarie
 (7, 9, 664,NULL,'Błąd systemu sterowania prędkością wagoników',3, 'naprawiona'),
 (8, 12, 854,NULL,'Awaria zamka elektromagnetycznego w pokoju',2, 'naprawiona');
 
+--@block
+INSERT INTO rodzaje_kosztow (rodzaj_kosztu_id,nazwa,opis) VALUES 
+(1,'atrakcje','zakup atrakcji'),
+(2, 'wypłaty pracowników', 'wypłaty należne każdemu z pracowników co 30 dni pracy'),
+(3,'odszkodowania','kwoty wypłacone ofirom wypadków w parku rozrywki'  ),
+(4,'awarie','opłaty by opłacić wszelkie naprawy' ),
+(5, 'przeglądy','opłaty za przeglądy firmy zewnętrznej' );
 
 
