@@ -1,0 +1,12 @@
+--@block
+INSERT INTO koszty_wynagrodzen
+(koszt_id, pracownik_id, okres_od, okres_do)
+SELECT
+  kd.koszt_id,
+  w.pracownik_id,
+  w.data_od,
+  w.data_do
+FROM koszty_dzialalnosci kd
+JOIN wynagrodzenia w
+  ON kd.opis LIKE CONCAT('%pracownika ', w.pracownik_id, '%')
+ AND kd.data_kosztu = w.data_do;
