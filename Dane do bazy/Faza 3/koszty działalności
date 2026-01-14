@@ -1,3 +1,35 @@
+--@block
+INSERT INTO koszty_dzialalnosci
+(koszt_id, rodzaj_kosztu_id, atrakcja_id, data_kosztu, kwota, opis)
+SELECT
+  934 + ROW_NUMBER() OVER (ORDER BY w.pracownik_id, w.data_od) AS koszt_id,
+  2 AS rodzaj_kosztu_id,
+  NULL AS atrakcja_id,
+  w.data_do AS data_kosztu,
+  w.kwota_miesieczna AS kwota,
+  CONCAT(
+    'wynagrodzenie pracownika ',
+    w.pracownik_id,
+    ' za okres ',
+    w.data_od,
+    ' - ',
+    w.data_do
+  ) AS opis
+FROM wynagrodzenia w;
+
+--@block
+INSERT INTO koszty_wynagrodzen
+(koszt_id, pracownik_id, okres_od, okres_do)
+SELECT
+  kd.koszt_id,
+  w.pracownik_id,
+  w.data_od,
+  w.data_do
+FROM koszty_dzialalnosci kd
+JOIN wynagrodzenia w
+  ON kd.opis LIKE CONCAT('%pracownika ', w.pracownik_id, '%')
+ AND kd.data_kosztu = w.data_do;
+
 --@BLOCK 
 INSERT INTO koszty_dzialalnosci
 (koszt_id, rodzaj_kosztu_id, atrakcja_id, data_kosztu, kwota, opis)
