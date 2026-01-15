@@ -1,0 +1,17 @@
+--usunięcie aktywności gości na atrakcjach w czasie kiedy były one wyłączone z użytku 
+DELETE a
+FROM aktywnosci_gosci a
+JOIN niedostepnosci_atrakcji n
+  ON a.atrakcja_id = n.atrakcja_id
+ AND a.data_wizyty BETWEEN n.data_od AND n.data_do;
+--@block
+ select * FROM aktywnosci_gosci where data_wizyty='2024-09-07'
+
+--@block
+--usunięcie dziur w numeracji id aktywności
+SET @i := 0;
+UPDATE aktywnosci_gosci
+SET aktywnosc_id = (@i := @i + 1)
+ORDER BY aktywnosc_id;
+--@block
+ALTER TABLE aktywnosci_gosci AUTO_INCREMENT = 1;
