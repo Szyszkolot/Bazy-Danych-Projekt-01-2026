@@ -37,3 +37,67 @@ SELECT
   ) AS opis
 FROM zgloszenia_zdarzen zz
 WHERE zz.kwota_wyplacona IS NOT NULL;
+
+--@block
+--@BLOCK
+INSERT INTO koszty_dzialalnosci
+  (koszt_id, rodzaj_kosztu_id, atrakcja_id, data_kosztu, kwota, opis)
+SELECT
+  1050 + ROW_NUMBER() OVER (ORDER BY t.data_kosztu, t.atrakcja_id) AS koszt_id,
+  4 AS rodzaj_kosztu_id,
+  t.atrakcja_id,
+  t.data_kosztu AS data_kosztu,
+  FLOOR(300 + RAND() * 1201) AS kwota,
+  CONCAT(
+    'Koszt naprawy atrakcji ',
+    t.atrakcja_id,
+    ' dnia ',
+    DATE_FORMAT(t.data_kosztu, '%Y-%m-%d')
+  ) AS opis
+FROM (
+--Atrakcje z niedostępnością
+  SELECT
+    a.atrakcja_id,
+    nd.max_data_do AS data_kosztu
+  FROM awarie a
+  JOIN (
+    SELECT atrakcja_id, MAX(data_do) AS max_data_do
+    FROM niedostepnosci_atrakcji
+    GROUP BY atrakcja_id
+  ) nd ON nd.atrakcja_id = a.atrakcja_id
+  UNION ALL
+
+--Bez niedostępności, ale jest przegląd -> data_przegladu + 5 dni */
+  SELECT
+    a.atrakcja_id,
+    DATE_ADD(p.data_przegladu, INTERVAL 5 DAY) AS data_kosztu
+  FROM awarie a
+  JOIN przeglady p
+    ON p.przeglad_id = a.przeglad_id
+   AND p.data_przegladu IS NOT NULL
+  LEFT JOIN (
+    SELECT DISTINCT atrakcja_id
+    FROM niedostepnosci_atrakcji
+  ) nd2 ON nd2.atrakcja_id = a.atrakcja_id
+  WHERE nd2.atrakcja_id IS NULL
+  UNION ALL
+  
+  SELECT
+    a.atrakcja_id,
+    DATE_ADD(
+      '2024-09-10',
+      INTERVAL FLOOR(
+        RAND() * (DATEDIFF('2025-10-10', '2024-09-10') + 1)
+      ) DAY
+    ) AS data_kosztu
+  FROM awarie a
+  LEFT JOIN (
+    SELECT DISTINCT atrakcja_id
+    FROM niedostepnosci_atrakcji
+  ) nd3 ON nd3.atrakcja_id = a.atrakcja_id
+  LEFT JOIN przeglady p2
+    ON p2.przeglad_id = a.przeglad_id
+   AND p2.data_przegladu IS NOT NULL
+  WHERE nd3.atrakcja_id IS NULL
+    AND p2.przeglad_id IS NULL
+) t;
