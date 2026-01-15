@@ -10,3 +10,14 @@ FROM koszty_dzialalnosci kd
 JOIN wynagrodzenia w
   ON kd.opis LIKE CONCAT('%pracownika ', w.pracownik_id, '%')
  AND kd.data_kosztu = w.data_do;
+--@block
+INSERT INTO koszty_awarii
+(koszt_id, awaria_id)
+SELECT
+  kd.koszt_id,
+  MIN(a.awaria_id) AS awaria_id
+FROM koszty_dzialalnosci kd
+JOIN awarie a
+  ON kd.atrakcja_id = a.atrakcja_id
+WHERE kd.rodzaj_kosztu_id = 4
+GROUP BY kd.koszt_id;
